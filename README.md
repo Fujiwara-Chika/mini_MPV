@@ -1,1 +1,1 @@
-A mini config for mpv on macOS
+mini config for mpv on macOS
