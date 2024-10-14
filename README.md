@@ -1,1 +1,2 @@
-mini config for mpv on macOS
+
+mini config for macOS, applicable to Linux and Windows
