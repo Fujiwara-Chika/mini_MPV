@@ -1283,7 +1283,7 @@ local option_values = script_options.values
 
 local BASE_EXTENSIONS = {
   'mkv', 'avi', 'mp4', 'ogv', 'webm', 'rmvb', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v', '3gp', 'mov', 'ts',
-  'mp3', 'wav', 'ogm', 'flac', 'm4a', 'wma', 'ogg', 'opus',
+  'mp3', 'wav', 'ogm', 'flac', 'm4a', 'm4b', 'wma', 'ogg', 'opus',
   'jpg', 'jpeg', 'jxl', 'png', 'bmp', 'gif', 'webp'
 }
 
