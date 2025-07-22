@@ -1051,105 +1051,105 @@ function save_playlist(filename)
   end
 end
 
--- function alphanumsort(a, b)
---   local function padnum(d)
---     local dec, n = string.match(d, "(%.?)0*(.+)")
---     return #dec > 0 and ("%.12f"):format(d) or ("%s%03d%s"):format(dec, #n, n)
---   end
---   return tostring(a):lower():gsub("%.?%d+", padnum) .. ("%3d"):format(#b)
---       < tostring(b):lower():gsub("%.?%d+", padnum) .. ("%3d"):format(#a)
--- end
+function alphanumsort(a, b)
+  local function padnum(d)
+    local dec, n = string.match(d, "(%.?)0*(.+)")
+    return #dec > 0 and ("%.12f"):format(d) or ("%s%03d%s"):format(dec, #n, n)
+  end
+  return tostring(a):lower():gsub("%.?%d+", padnum) .. ("%3d"):format(#b)
+      < tostring(b):lower():gsub("%.?%d+", padnum) .. ("%3d"):format(#a)
+end
 
--- -- fast sort algo from https://github.com/zsugabubus/dotfiles/blob/master/.config/mpv/scripts/playlist-filtersort.lua
--- function sortplaylist(startover)
---   local playlist = mp.get_property_native('playlist')
---   if #playlist < 2 then return end
+-- fast sort algo from https://github.com/zsugabubus/dotfiles/blob/master/.config/mpv/scripts/playlist-filtersort.lua
+function sortplaylist(startover)
+  local playlist = mp.get_property_native('playlist')
+  if #playlist < 2 then return end
 
---   local order = {}
---   for i = 1, #playlist do
---     order[i] = i
---     playlist[i].string = get_name_from_index(i - 1, true)
---   end
+  local order = {}
+  for i = 1, #playlist do
+    order[i] = i
+    playlist[i].string = get_name_from_index(i - 1, true)
+  end
 
---   table.sort(order, function(a, b)
---     return sort_modes[sort_mode].sort_fn(a, b, playlist)
---   end)
+  table.sort(order, function(a, b)
+    return sort_modes[sort_mode].sort_fn(a, b, playlist)
+  end)
 
---   for i = 1, #playlist do
---     playlist[order[i]].new_pos = i
---   end
+  for i = 1, #playlist do
+    playlist[order[i]].new_pos = i
+  end
 
---   for i = 1, #playlist do
---     while true do
---       local j = playlist[i].new_pos
---       if i == j then
---         break
---       end
---       mp.commandv('playlist-move', (i) - 1, (j + 1) - 1)
---       mp.commandv('playlist-move', (j - 1) - 1, (i) - 1)
---       playlist[j], playlist[i] = playlist[i], playlist[j]
---     end
---   end
+  for i = 1, #playlist do
+    while true do
+      local j = playlist[i].new_pos
+      if i == j then
+        break
+      end
+      mp.commandv('playlist-move', (i) - 1, (j + 1) - 1)
+      mp.commandv('playlist-move', (j - 1) - 1, (i) - 1)
+      playlist[j], playlist[i] = playlist[i], playlist[j]
+    end
+  end
 
---   for i = 1, #playlist do
---     local filename = mp.get_property('playlist/' .. i - 1 .. '/filename')
---     local ext = filename:match("%.([^%.]+)$")
---     if not ext or not filetype_lookup[ext:lower()] then
---       --move the directory to the end of the playlist
---       mp.commandv('playlist-move', i - 1, #playlist)
---     end
---   end
+  for i = 1, #playlist do
+    local filename = mp.get_property('playlist/' .. i - 1 .. '/filename')
+    local ext = filename:match("%.([^%.]+)$")
+    if not ext or not filetype_lookup[ext:lower()] then
+      --move the directory to the end of the playlist
+      mp.commandv('playlist-move', i - 1, #playlist)
+    end
+  end
 
---   cursor = mp.get_property_number('playlist-pos', 0)
---   if startover then
---     mp.set_property('playlist-pos', 0)
---   end
---   if playlist_visible then
---     showplaylist()
---   end
---   if settings.display_osd_feedback then
---     mp.osd_message("Playlist sorted with " .. sort_modes[sort_mode].title)
---   end
--- end
+  cursor = mp.get_property_number('playlist-pos', 0)
+  if startover then
+    mp.set_property('playlist-pos', 0)
+  end
+  if playlist_visible then
+    showplaylist()
+  end
+  if settings.display_osd_feedback then
+    mp.osd_message("Playlist sorted with " .. sort_modes[sort_mode].title)
+  end
+end
 
--- function reverseplaylist()
---   local length = mp.get_property_number('playlist-count', 0)
---   if length < 2 then return end
---   for outer = 1, length - 1, 1 do
---     mp.commandv('playlist-move', outer, 0)
---   end
---   if playlist_visible then
---     showplaylist()
---   elseif settings.display_osd_feedback then
---     mp.osd_message("Playlist reversed")
---   end
--- end
+function reverseplaylist()
+  local length = mp.get_property_number('playlist-count', 0)
+  if length < 2 then return end
+  for outer = 1, length - 1, 1 do
+    mp.commandv('playlist-move', outer, 0)
+  end
+  if playlist_visible then
+    showplaylist()
+  elseif settings.display_osd_feedback then
+    mp.osd_message("Playlist reversed")
+  end
+end
 
--- function shuffleplaylist()
---   refresh_globals()
---   if plen < 2 then return end
---   mp.command("playlist-shuffle")
---   math.randomseed(os.time())
---   mp.commandv("playlist-move", pos, math.random(0, plen - 1))
+function shuffleplaylist()
+  refresh_globals()
+  if plen < 2 then return end
+  mp.command("playlist-shuffle")
+  math.randomseed(os.time())
+  mp.commandv("playlist-move", pos, math.random(0, plen - 1))
 
---   local playlist = mp.get_property_native('playlist')
---   for i = 1, #playlist do
---     local filename = mp.get_property('playlist/' .. i - 1 .. '/filename')
---     local ext = filename:match("%.([^%.]+)$")
---     if not ext or not filetype_lookup[ext:lower()] then
---       --move the directory to the end of the playlist
---       mp.commandv('playlist-move', i - 1, #playlist)
---     end
---   end
+  local playlist = mp.get_property_native('playlist')
+  for i = 1, #playlist do
+    local filename = mp.get_property('playlist/' .. i - 1 .. '/filename')
+    local ext = filename:match("%.([^%.]+)$")
+    if not ext or not filetype_lookup[ext:lower()] then
+      --move the directory to the end of the playlist
+      mp.commandv('playlist-move', i - 1, #playlist)
+    end
+  end
 
---   mp.set_property('playlist-pos', 0)
---   refresh_globals()
---   if playlist_visible then
---     showplaylist()
---   elseif settings.display_osd_feedback then
---     mp.osd_message("Playlist shuffled")
---   end
--- end
+  mp.set_property('playlist-pos', 0)
+  refresh_globals()
+  if playlist_visible then
+    showplaylist()
+  elseif settings.display_osd_feedback then
+    mp.osd_message("Playlist shuffled")
+  end
+end
 
 function bind_keys(keys, name, func, opts)
   if keys == nil or keys == "" then
