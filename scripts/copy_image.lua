@@ -10,9 +10,9 @@ local utils = require 'mp.utils'
 -- 1. 用户配置
 ----------------------------------------------------------------
 local DEST_DIR = {
-    macOS  = os.getenv("HOME") .. "/Pictures/Twitter",
-    Linux  = os.getenv("HOME") .. "/Pictures/",
-    Windows = (os.getenv("USERPROFILE") or "") .. "\\Pictures\\",
+    macOS  = os.getenv("HOME") .. "/Desktop/Twitter",
+    Linux  = os.getenv("HOME") .. "/Desktop/",
+    Windows = (os.getenv("USERPROFILE") or "") .. "\\Desktop\\",
 }
 ----------------------------------------------------------------
 
